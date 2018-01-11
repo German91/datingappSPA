@@ -22,10 +22,16 @@ export class UserService {
             .catch(this.handleError);
     }
 
-    getUser(id): Observable<User> {
+    getUser(id: number): Observable<User> {
         return this.authHttp
             .get(this.baseUrl + 'users/' + id)
             .map(response => <User>response.json())
+            .catch(this.handleError);
+    }
+
+    updateUser(id: number, user: User) {
+        return this.authHttp
+            .put(this.baseUrl + 'users/' + id, user)
             .catch(this.handleError);
     }
 
