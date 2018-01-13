@@ -6,7 +6,7 @@ import { BsDropdownModule, TabsModule, BsDatepickerModule, PaginationModule, But
 import { RouterModule } from '@angular/router';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { FileUploadModule } from 'ng2-file-upload';
-import { TimeAgoPipe } from 'time-ago-pipe';
+import { TimeAgoPipe } from './_pipes/time-ago-pipe';
 import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
@@ -32,7 +32,16 @@ import { PhotoEditorComponent } from './members/photo-editor/photo-editor.compon
 import { ListResolver } from './_resolvers/list.resolver';
 import { MessageResolver } from './_resolvers/message.resolver';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
 
+export function getAccessToken(): string {
+  return localStorage.getItem('token');
+}
+
+export const jwtConfig = {
+  tokenGetter: getAccessToken,
+  whitelistedDomains: ['localhost:5000']
+};
 
 @NgModule({
   declarations: [
@@ -65,12 +74,7 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     ButtonsModule .forRoot(),
     HttpClientModule,
     JwtModule.forRoot({
-      config: {
-        tokenGetter: () => {
-          return localStorage.getItem('token');
-        },
-        whitelistedDomains: ['localhost:5000']
-      }
+      config: jwtConfig
     })
   ],
   providers: [
@@ -83,7 +87,8 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     MemberEditResolver,
     PreventUnsavedChanges,
     ListResolver,
-    MessageResolver
+    MessageResolver,
+    ErrorInterceptorProvider
   ],
   bootstrap: [AppComponent]
 })
